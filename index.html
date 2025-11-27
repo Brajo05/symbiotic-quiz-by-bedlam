@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbiotic Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const quizData = {
+            easy: [
+                {
+                    q: "What is Symbiotic primarily designed for?",
+                    options: ["NFT marketplace", "Shared-security and restaking", "Lending stablecoins", "Centralized exchange"],
+                    answer: 1
+                },
+                {
+                    q: "Which type of blockchain asset can be staked in Symbiotic?",
+                    options: ["Bitcoin only", "ERC-20 tokens and LSTs", "NFTs only", "Fiat currencies"],
+                    answer: 1
+                },
+                {
+                    q: "Symbiotic allows networks to:",
+                    options: ["Outsource their security", "Print tokens freely", "Avoid audits", "Operate offline only"],
+                    answer: 0
+                },
+                {
+                    q: "Who operates the vaults in Symbiotic?",
+                    options: ["Miners", "Operators", "Symbiotic team only", "Central banks"],
+                    answer: 1
+                },
+                {
+                    q: "Symbiotic's protocol is:",
+                    options: ["Permissionless", "Closed", "Centralized", "Only available to exchanges"],
+                    answer: 0
+                },
+                {
+                    q: "What does restaking mean in Symbiotic?",
+                    options: ["Using staked assets to secure multiple networks", "Selling tokens", "Minting new NFTs", "Borrowing stablecoins"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic was funded via a:",
+                    options: ["$5.8M seed round", "Kickstarter campaign", "Bank loan", "ICO only"],
+                    answer: 0
+                },
+                {
+                    q: "What is a 'vault' in Symbiotic?",
+                    options: ["A place to store stakers' collateral", "A digital NFT gallery", "A marketplace for tokens", "A blockchain explorer"],
+                    answer: 0
+                },
+                {
+                    q: "Which of the following can participate in Symbiotic?",
+                    options: ["Any network or developer", "Only Ethereum validators", "Only NFT artists", "Only centralized banks"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic's restaking system is meant to:",
+                    options: ["Increase security efficiency", "Launch NFTs", "Print stablecoins", "Remove decentralization"],
+                    answer: 0
+                }
+            ],
+            hard: [
+                {
+                    q: "Who defines the slashing rules in Symbiotic vaults?",
+                    options: ["Symbiotic core team", "Each individual network", "External auditors only", "Delegated wallets only"],
+                    answer: 1
+                },
+                {
+                    q: "What is the primary benefit of vault pooling?",
+                    options: ["Networks share security costs", "Instant token minting", "NFT creation", "Centralization"],
+                    answer: 0
+                },
+                {
+                    q: "Which type of token is NOT supported by Symbiotic?",
+                    options: ["ERC-20", "LSTs", "ETH", "Fiat currencies"],
+                    answer: 3
+                },
+                {
+                    q: "Operators in Symbiotic are responsible for:",
+                    options: ["Securing networks using delegated stake", "Printing new fiat", "Managing NFT marketplaces", "Controlling Bitcoin miners"],
+                    answer: 0
+                },
+                {
+                    q: "Permissionless design means:",
+                    options: ["Anyone can participate without approval", "Only pre-approved institutions can join", "Users must request activation from Symbiotic", "Operations happen offline only"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic allows networks to:",
+                    options: ["Customize their staking/reward rules", "Avoid smart contracts", "Stop decentralization", "Centralize everything"],
+                    answer: 0
+                },
+                {
+                    q: "Why is multi-asset support important?",
+                    options: ["It allows capital efficiency and flexibility", "It reduces NFT creation", "It forces all tokens into ETH", "It blocks small networks"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic was designed for:",
+                    options: ["Modular, scalable security", "Selling NFTs", "Centralized finance only", "Mining Bitcoin exclusively"],
+                    answer: 0
+                },
+                {
+                    q: "Which of these is a key risk?",
+                    options: ["Slashing risk depending on vault/operator", "Printing stablecoins", "NFTs losing rarity", "Token expiration"],
+                    answer: 0
+                },
+                {
+                    q: "Vaults in Symbiotic enable:",
+                    options: ["Shared staking across networks", "Exclusive NFT drops", "Fiat lending", "Centralized custody only"],
+                    answer: 0
+                }
+            ],
+            extreme: [
+                {
+                    q: "Which of the following best describes Symbiotic's modular collateral system?",
+                    options: ["Only ETH can be used, with fixed rewards", "Supports ERC-20s, LSTs, and custom staking/reward rules", "Collateral must be liquidated every 24 hours", "Centralized validators control all rewards"],
+                    answer: 1
+                },
+                {
+                    q: "Symbiotic's restaking allows:",
+                    options: ["One staked asset to secure multiple networks", "Only NFT minting", "Only ETH staking", "Centralized control of all tokens"],
+                    answer: 0
+                },
+                {
+                    q: "How does Symbiotic improve capital efficiency?",
+                    options: ["Pooled assets secure multiple networks", "Only fiat is used", "Centralized banks manage all staking", "NFTs are used as collateral"],
+                    answer: 0
+                },
+                {
+                    q: "Which is NOT a feature of Symbiotic's design?",
+                    options: ["Multi-asset support", "Permissionless participation", "Vault-specific slashing rules", "Automatic fiat printing"],
+                    answer: 3
+                },
+                {
+                    q: "Why do operators matter?",
+                    options: ["They execute the delegated stake to secure networks", "They create new stablecoins", "They manage NFT auctions", "They set token prices"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic's economic model incentivizes:",
+                    options: ["Secure network operation and staker participation", "NFT speculation", "Centralized control", "Stablecoin inflation"],
+                    answer: 0
+                },
+                {
+                    q: "Which is a potential risk for stakers?",
+                    options: ["Vault misbehavior leading to slashing", "NFT floor price drop", "Token expiration", "Gas fees on Bitcoin"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic's mainnet launch in 2025 indicated:",
+                    options: ["The protocol is live and operational", "NFT minting is free", "The project closed", "Only ETH is supported"],
+                    answer: 0
+                },
+                {
+                    q: "Symbiotic allows networks to define:",
+                    options: ["Reward structures, collateral rules, and slashing logic", "NFT rarity tiers", "Fiat-backed tokens", "Blockchain consensus outside Ethereum"],
+                    answer: 0
+                },
+                {
+                    q: "Why is Symbiotic considered innovative?",
+                    options: ["Combines modular restaking, multi-asset support, and shared security", "Prints stablecoins automatically", "Centralizes all staking", "Only allows ETH validators"],
+                    answer: 0
+                }
+            ]
+        };
+
+        const CheckCircle = () => (
+            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+
+        const XCircle = () => (
+            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+
+        const Trophy = () => (
+            <svg className="w-24 h-24 text-yellow-500 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+        );
+
+        const ArrowRight = () => (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+        );
+
+        const RotateCcw = () => (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            </svg>
+        );
+
+        function SymbioticQuiz() {
+            const [currentLevel, setCurrentLevel] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+            const [score, setScore] = useState(0);
+            const [quizComplete, setQuizComplete] = useState(false);
+
+            const levels = [
+                { id: 'easy', name: 'Easy', color: 'bg-green-500', hoverColor: 'hover:bg-green-600' },
+                { id: 'hard', name: 'Hard', color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-600' },
+                { id: 'extreme', name: 'Extreme', color: 'bg-red-500', hoverColor: 'hover:bg-red-600' }
+            ];
+
+            const startQuiz = (level) => {
+                setCurrentLevel(level);
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizComplete(false);
+            };
+
+            const handleAnswer = (index) => {
+                if (showResult) return;
+                setSelectedAnswer(index);
+                setShowResult(true);
+                if (index === quizData[currentLevel][currentQuestion].answer) {
+                    setScore(score + 1);
+                }
+            };
+
+            const nextQuestion = () => {
+                if (currentQuestion < quizData[currentLevel].length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                } else {
+                    setQuizComplete(true);
+                }
+            };
+
+            const resetQuiz = () => {
+                setCurrentLevel(null);
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizComplete(false);
+            };
+
+            if (!currentLevel) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+                        <div className="max-w-2xl w-full">
+                            <div className="text-center mb-12">
+                                <h1 className="text-5xl font-bold text-gray-800 mb-4">Symbiotic Quiz</h1>
+                                <p className="text-gray-600 text-lg">Test your knowledge about Symbiotic protocol</p>
+                            </div>
+                            
+                            <div className="grid gap-6">
+                                {levels.map((level) => (
+                                    <button
+                                        key={level.id}
+                                        onClick={() => startQuiz(level.id)}
+                                        className={`${level.color} ${level.hoverColor} text-white p-8 rounded-2xl shadow-lg transform transition hover:scale-105 hover:shadow-xl`}
+                                    >
+                                        <h2 className="text-3xl font-bold mb-2">{level.name}</h2>
+                                        <p className="text-white text-opacity-90">10 Questions</p>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (quizComplete) {
+                const percentage = (score / quizData[currentLevel].length) * 100;
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+                        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
+                            <Trophy />
+                            <h2 className="text-4xl font-bold text-gray-800 mb-4">Quiz Complete!</h2>
+                            <div className="text-6xl font-bold text-indigo-600 mb-4">{score}/{quizData[currentLevel].length}</div>
+                            <p className="text-2xl text-gray-600 mb-8">{percentage.toFixed(0)}% Correct</p>
+                            
+                            <div className="space-y-4">
+                                <button
+                                    onClick={() => startQuiz(currentLevel)}
+                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 px-6 rounded-xl font-semibold text-lg transition"
+                                >
+                                    Retry This Level
+                                </button>
+                                <button
+                                    onClick={resetQuiz}
+                                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-4 px-6 rounded-xl font-semibold text-lg transition"
+                                >
+                                    Back to Levels
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            const question = quizData[currentLevel][currentQuestion];
+            const isCorrect = selectedAnswer === question.answer;
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                    <div className="max-w-3xl mx-auto pt-8">
+                        <div className="flex justify-between items-center mb-8">
+                            <button
+                                onClick={resetQuiz}
+                                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition"
+                            >
+                                <RotateCcw />
+                                Back to Levels
+                            </button>
+                            <div className="text-gray-600 font-semibold">
+                                Question {currentQuestion + 1}/{quizData[currentLevel].length}
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl shadow-2xl p-8">
+                            <div className="mb-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-semibold capitalize">
+                                        {currentLevel}
+                                    </span>
+                                    <span className="text-gray-500">Score: {score}</span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-800 leading-relaxed">{question.q}</h3>
+                            </div>
+
+                            <div className="space-y-4">
+                                {question.options.map((option, index) => {
+                                    let buttonClass = "w-full text-left p-5 rounded-xl border-2 transition-all ";
+                                    
+                                    if (!showResult) {
+                                        buttonClass += "border-gray-200 hover:border-indigo-400 hover:bg-indigo-50";
+                                    } else if (index === question.answer) {
+                                        buttonClass += "border-green-500 bg-green-50";
+                                    } else if (index === selectedAnswer && !isCorrect) {
+                                        buttonClass += "border-red-500 bg-red-50";
+                                    } else {
+                                        buttonClass += "border-gray-200 opacity-50";
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(index)}
+                                            disabled={showResult}
+                                            className={buttonClass}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-lg">{option}</span>
+                                                {showResult && index === question.answer && <CheckCircle />}
+                                                {showResult && index === selectedAnswer && !isCorrect && <XCircle />}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {showResult && (
+                                <div className="mt-8">
+                                    <button
+                                        onClick={nextQuestion}
+                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition"
+                                    >
+                                        {currentQuestion < quizData[currentLevel].length - 1 ? 'Next Question' : 'See Results'}
+                                        <ArrowRight />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<SymbioticQuiz />, document.getElementById('root'));
+    </script>
+</body>
+</html>
